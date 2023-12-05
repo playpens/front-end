@@ -5,12 +5,12 @@ const API = import.meta.env.VITE_API_URL;
 
 function App() {
 
-  const [data, setData] = useState({})
+  const [data, setData] = useState([])
 
-  async function getData() {
+  async function getData(listType) {
     // Use axios to fetch data from our web server
     try {
-      let response = await axios.get(API);
+      let response = await axios.get(`${API}/shopping-list?type=${listType}`);
       console.log(response);
       setData( response.data );
     } catch(e) {
@@ -18,10 +18,27 @@ function App() {
     }
   }
 
+  function getFood() {
+    // ?type=food
+    getData("food");
+  }
+
+  function getSupplies() {
+    // type=supplies
+    getData("supplies");
+  }
+
   return (
     <>
-      <h1>{data.message}</h1>
-      <button onClick={getData}>CLick Me</button>
+      <button onClick={getFood}>Get Food List</button>
+      <button onClick={getSupplies}>Get Supplies List</button>
+      <ul>
+        {
+          data.map( (thing,idx) => 
+            <li key={idx}>{thing.name}</li>
+          )
+        }
+      </ul>
     </>
   )
 }
